@@ -156,7 +156,6 @@ if "weekly_data" not in st.session_state:
     
     
 else:
-    print("esle")
     weekly_data = st.session_state.weekly_data
     player_mapping = weekly_data[['player_id', 'player_name', 'player_display_name','position_group', 'value']].drop_duplicates()
     print(weekly_data)
@@ -174,6 +173,7 @@ if "values" not in st.session_state:
 pos = st.multiselect('Select a position', weekly_data.position_group.unique(), default=['QB', 'RB', 'WR', 'TE'])
 #def calculate_df(pos, weekly_data)
 
+weekly_data = clean_weekly_data(weekly_data)
 data_mean = calculate_table(weekly_data)
 
 df = st.data_editor(data_mean, hide_index=True)
