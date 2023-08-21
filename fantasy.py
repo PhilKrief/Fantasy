@@ -121,7 +121,7 @@ def calculate_table(weekly_data):
     data_count = weekly_data.groupby(['player_id'])[['fantasy_points_half_ppr']].count().reset_index().rename(columns={'fantasy_points_half_ppr': 'games_played'})
     data_mean = weekly_data.groupby(['player_id'])[['fantasy_points_half_ppr']].mean().reset_index()
     data_mean = pd.merge(data_mean, data_count, on='player_id', how='left')
-    data_mean = pd.merge(data_mean, player_mapping, on='player_id', how='left')
+    data_mean = pd.merge(data_mean, st.session_state.player_mapping, on='player_id', how='left')
     data_mean = data_mean[['player_display_name', 'games_played', 'fantasy_points_half_ppr', 'position_group', 'value']]
     # filter out players with less than 5 games played
     data_mean = data_mean[data_mean['games_played'] >= 5]
@@ -159,8 +159,8 @@ else:
     print("esle")
     weekly_data = st.session_state.weekly_data
     player_mapping = weekly_data[['player_id', 'player_name', 'player_display_name','position_group', 'value']].drop_duplicates()
-    print(weekly_data)
-    print(player_mapping)
+    st.session_state.player_mapping = player_mapping
+    st.session_state.weekly_data = clean_weekly_data(weekly_data)
 
 
 if "schedule_data" not in st.session_state:
@@ -173,6 +173,7 @@ if "values" not in st.session_state:
 
 pos = st.multiselect('Select a position', weekly_data.position_group.unique(), default=['QB', 'RB', 'WR', 'TE'])
 #def calculate_df(pos, weekly_data)
+print(st.session_state.weekly_data)
 
 data_mean = calculate_table(st.session_state.weekly_data)
 
